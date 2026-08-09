@@ -1,6 +1,7 @@
 # FitSculpt Pro
 
-[![lint · checks · build](https://img.shields.io/github/actions/workflow/status/aledtr77/fitsculpt-pro/ci.yml?branch=main&label=lint%20%C2%B7%20checks%20%C2%B7%20build)](https://github.com/aledtr77/fitsculpt-pro/actions/workflows/ci.yml)
+[![lint · checks · tests · build](https://img.shields.io/github/actions/workflow/status/aledtr77/fitsculpt-pro/ci.yml?branch=main&label=lint%20%C2%B7%20checks%20%C2%B7%20tests%20%C2%B7%20build)](https://github.com/aledtr77/fitsculpt-pro/actions/workflows/ci.yml)
+[![149 tests](https://img.shields.io/badge/tests-149%20(Vitest)-3fb950)](tests/)
 [![licence: source-available](https://img.shields.io/badge/licence-source--available-0969da)](LICENSE)
 
 A single-page landing template for physique and body-sculpting coaches. Light and
@@ -58,6 +59,7 @@ index.html              the landing page — every section lives here
 pages/                  privacy, disclaimer
 src/styles/             theme, base, layout, components, sections, main
 src/scripts/            theme, calculator, modal, animations, main
+tests/                  one file per script module (see below)
 scripts/                the checks CI runs (see below)
 vite.config.js
 ```
@@ -77,6 +79,7 @@ git clone https://github.com/aledtr77/fitsculpt-pro.git
 cd fitsculpt-pro
 npm install
 npm run dev      # http://localhost:3000
+npm test         # 149 tests (Vitest)
 npm run build    # static output in dist/
 ```
 
@@ -87,6 +90,32 @@ that `dist/` folder, unedited.
 One exception: a GitHub Pages **project** site serves from a subpath
 (`user.github.io/repo/`), and the emitted asset URLs are absolute. Set `base: '/repo/'`
 in `vite.config.js` for that case, or every stylesheet, script and image 404s.
+
+## Tests
+
+149 tests, one file per script module, run in a jsdom document.
+
+```bash
+npm test           # what CI runs
+npm run test:watch
+```
+
+Everything in `src/scripts/` is an init function that reads the document and
+writes it back — there is no logic layer underneath to test on its own. Testing
+it in Node would mean testing a reimplementation of it, so the tests drive the
+real modules against real markup instead: click the toggle, submit the form,
+press Escape, and read what the page says afterwards.
+
+What they cover is the part of this template that fails without a symptom. The
+BMI bands are checked at every cut-off, because a misplaced boundary renders as
+convincingly as a correct one. The annual price has to say `/month, billed
+annually`, because labelling it `/year` turned a 20% discount into an
+advertised 93% one. The scroll lock is reference-counted, and the dialog and the
+drawer can be open at once. The booking form has to come back after it is
+submitted and dismissed, or the next visitor finds the previous one's
+confirmation and no fields. And a visitor's name reaches the confirmation panel
+through `textContent`, so a name shaped like an `<img onerror=…>` tag arrives as
+characters.
 
 ## The checks
 
@@ -105,7 +134,7 @@ npm run check:modules  # every stylesheet and script reachable from its entry po
 hardcoded, so it keeps working once you point the site at your own domain — it
 checks that the URLs agree with each other, not that they match some fixed value.
 
-CI runs those, then builds and checks that the output is deployable: every page
+CI runs the tests and those checks, then builds and checks that the output is deployable: every page
 built, every page carrying the bundle, nothing still pointing at `src/`, and no
 relative link left in `404.html` — which answers for any unknown URL at any
 depth, so a relative link there resolves somewhere different every time.

@@ -9,18 +9,24 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "check": "npm run check:pages && npm run check:origin && npm run check:modules",
     "check:pages": "node scripts/check-pages.mjs",
     "check:origin": "node scripts/check-origin.mjs",
     "check:modules": "node scripts/check-modules.mjs",
+    "badge": "node scripts/sync-test-badge.mjs",
+    "badge:check": "node scripts/sync-test-badge.mjs --check",
     "verify:gates": "bash scripts/verify-gates.sh"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "eslint": "^10.8.0",
     "globals": "^17.9.0",
-    "vite": "^8.2.0"
+    "jsdom": "^29.1.1",
+    "vite": "^8.2.0",
+    "vitest": "^4.1.10"
   }
 }

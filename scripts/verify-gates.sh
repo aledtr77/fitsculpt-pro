@@ -22,9 +22,10 @@ REPORT=()
 sandbox() {
   local d
   d="$(mktemp -d)"
-  cp "$ROOT"/index.html "$ROOT"/404.html "$ROOT"/vite.config.js "$ROOT"/eslint.config.mjs \
+  cp "$ROOT"/index.html "$ROOT"/404.html "$ROOT"/vite.config.js "$ROOT"/vitest.config.mjs \
+     "$ROOT"/eslint.config.mjs "$ROOT"/README.md \
      "$ROOT"/package.json "$ROOT"/package-lock.json "$ROOT"/.gitignore "$d"/
-  cp -r "$ROOT/src" "$ROOT/public" "$ROOT/pages" "$ROOT/scripts" "$d"/
+  cp -r "$ROOT/src" "$ROOT/public" "$ROOT/pages" "$ROOT/scripts" "$ROOT/tests" "$d"/
   ln -s "$ROOT/node_modules" "$d/node_modules"
   echo "$d"
 }
@@ -112,6 +113,8 @@ d=$(sandbox); check "control/lint"          pass "$d" npm run lint --silent
 d=$(sandbox); check "control/check-pages"   pass "$d" npm run check:pages --silent
 d=$(sandbox); check "control/check-origin"  pass "$d" npm run check:origin --silent
 d=$(sandbox); check "control/check-modules" pass "$d" npm run check:modules --silent
+d=$(sandbox); check "control/test"          pass "$d" npm test --silent
+d=$(sandbox); check "control/badge"         pass "$d" npm run badge:check --silent
 d=$(sandbox); check "control/build"         pass "$d" bash -c gate_build
 
 # --- Lint: the typos Vite bundles without complaining -------------------------
@@ -157,6 +160,41 @@ check "check-modules/stylesheet no longer imported" fail "$d" npm run check:modu
 d=$(sandbox)
 mutate "$d/src/scripts/main.js" perl -pi -e "s{import \{ initAnimations \} from './animations\.js';\n}{}; s{\s*initAnimations\(\);\n}{\n}" "$d/src/scripts/main.js"
 check "check-modules/feature module no longer imported" fail "$d" npm run check:modules --silent
+
+# --- Tests: the behaviour that looks identical when it is wrong ---------------
+# Every defect below renders. The page loads, nothing is undefined, lint and the
+# build are green, and the only way to find out is to read the number on screen
+# and know what it should have said.
+echo "[test] the defects that still look like a working page"
+d=$(sandbox)
+mutate "$d/src/scripts/calculator.js" perl -pi -e 's/\{ max: 25,/{ max: 24.9,/' "$d/src/scripts/calculator.js"
+check "test/BMI band that leaves a gap between two bands" fail "$d" npm test --silent
+
+d=$(sandbox)
+mutate "$d/src/scripts/animations.js" perl -pi -e "s{'/month, billed annually'}{'/year'}" "$d/src/scripts/animations.js"
+check "test/annual price labelled as a yearly total" fail "$d" npm test --silent
+
+d=$(sandbox)
+mutate "$d/src/scripts/overlay.js" perl -pi -e "s{if \(locks === 0\) document\.body\.style\.overflow = '';}{document.body.style.overflow = '';}" "$d/src/scripts/overlay.js"
+check "test/scroll lock released while an overlay is still open" fail "$d" npm test --silent
+
+d=$(sandbox)
+mutate "$d/src/scripts/modal.js" perl -pi -e 's{^\s*restoreForm\?\.\(\);\n}{}' "$d/src/scripts/modal.js"
+check "test/booking form never restored after a dismissal" fail "$d" npm test --silent
+
+d=$(sandbox)
+mutate "$d/src/scripts/forms.js" perl -pi -e 's{body\.textContent = message;}{body.innerHTML = message;}' "$d/src/scripts/forms.js"
+check "test/visitor text written into the panel as markup" fail "$d" npm test --silent
+
+d=$(sandbox)
+mutate "$d/src/scripts/theme.js" perl -pi -e "s{theme === 'light' \? 'dark' : 'light'}{theme === 'light' ? 'light' : 'dark'}" "$d/src/scripts/theme.js"
+check "test/toggle announcing its state instead of its action" fail "$d" npm test --silent
+
+# --- Badge: a number that is right the day it is typed ------------------------
+echo "[badge] the count that goes stale on its own"
+d=$(sandbox)
+mutate "$d/README.md" perl -pi -e 's{\[!\[(\d+) tests\]}{"[![".($1 + 1)." tests]"}e' "$d/README.md"
+check "badge/README claiming a test count the suite does not have" fail "$d" npm run badge:check --silent
 
 # --- Build output: what actually reaches the host -----------------------------
 echo "[build] what actually gets deployed"

@@ -32,6 +32,19 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      # Everything in src/scripts/ is an init function over the document, so the
+      # suite drives the real modules against real markup in jsdom. What it is
+      # there for is the class of defect that renders as convincingly as the
+      # correct behaviour: a BMI band off by a tenth, an annual price labelled
+      # /year, a form that never comes back after it is submitted.
+      - name: Test
+        run: npm test
+
+      # The count in the README badge is written down, so it is right on the day
+      # it is written and silently wrong afterwards.
+      - name: Test-count badge
+        run: npm run badge:check
+
       # Page lists, self-referencing origins and the import graph: three things
       # that are written by hand in more than one place and that nothing else
       # keeps in step. All three fail silently — the site builds and loads.
