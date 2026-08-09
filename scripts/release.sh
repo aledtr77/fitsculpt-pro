@@ -49,6 +49,22 @@ say()  { printf '\n\033[1m%s\033[0m\n' "$*"; }
 fail() { printf '\nERROR: %s\n' "$*" >&2; exit 1; }
 run()  { if [ "$DRY_RUN" = 1 ]; then echo "   [dry-run] $*"; else "$@"; fi; }
 
+# Runs a check quietly and, when it fails, prints what it said before giving up.
+# Sending the output to /dev/null and then dying on `set -e` leaves you with an
+# exit status and no reason — which is how this script first failed elsewhere in
+# this series.
+step() {
+  local label="$1"; shift
+  local out
+  if out="$("$@" 2>&1)"; then
+    echo "   $label"
+  else
+    printf '\n%s\n' "$out" >&2
+    fail "$label"
+  fi
+}
+
+
 CURRENT=$(node -p "require('./package.json').version")
 say "Releasing from v$CURRENT  (bump: $LEVEL)"
 [ "$DRY_RUN" = 1 ] && echo "   DRY-RUN: nothing will be modified"
@@ -118,12 +134,9 @@ fi
 # "ok" without having run them would be false reassurance — worse than not
 # checking at all.
 say "2. Checks"
-npm run lint --silent
-echo "   lint: clean"
-npm run check --silent >/dev/null
-echo "   sources agree with themselves"
-npm run build --silent >/dev/null
-echo "   build: ok"
+step "lint: clean"                   npm run lint --silent
+step "sources agree with themselves" npm run check --silent
+step "build: ok"                     npm run build --silent
 
 # --- From here on things change ----------------------------------------------
 say "3. Version, commit, tag"
