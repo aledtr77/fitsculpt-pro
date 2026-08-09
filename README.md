@@ -1,6 +1,6 @@
 # FitSculpt Pro
 
-[![lint · build](https://img.shields.io/github/actions/workflow/status/aledtr77/template-fitsculpt-pro/ci.yml?branch=main&label=lint%20%C2%B7%20build)](https://github.com/aledtr77/template-fitsculpt-pro/actions/workflows/ci.yml)
+[![lint · build](https://img.shields.io/github/actions/workflow/status/aledtr77/fitsculpt-pro/ci.yml?branch=main&label=lint%20%C2%B7%20build)](https://github.com/aledtr77/fitsculpt-pro/actions/workflows/ci.yml)
 [![licence: source-available](https://img.shields.io/badge/licence-source--available-0969da)](LICENSE)
 
 A single-page landing template for physique and body-sculpting coaches. Light and
@@ -72,8 +72,8 @@ every time.
 Node 20.19 or newer (22.12+ on the 22 line) — what Vite 8 asks for.
 
 ```bash
-git clone https://github.com/aledtr77/template-fitsculpt-pro.git
-cd template-fitsculpt-pro
+git clone https://github.com/aledtr77/fitsculpt-pro.git
+cd fitsculpt-pro
 npm install
 npm run dev      # http://localhost:3000
 npm run build    # static output in dist/
