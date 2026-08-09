@@ -1,7 +1,7 @@
 {
   "name": "fitsculpt-pro",
   "private": true,
-  "version": "1.1.0",
+  "version": "1.0.0",
   "description": "FitSculpt Pro - single-page landing template for physique and body-sculpting coaches",
   "license": "SEE LICENSE IN LICENSE",
   "type": "module",
@@ -15,8 +15,7 @@
     "check:pages": "node scripts/check-pages.mjs",
     "check:origin": "node scripts/check-origin.mjs",
     "check:modules": "node scripts/check-modules.mjs",
-    "verify:gates": "bash scripts/verify-gates.sh",
-    "release": "bash scripts/release.sh"
+    "verify:gates": "bash scripts/verify-gates.sh"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
