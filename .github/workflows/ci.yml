@@ -5,9 +5,13 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
-  check:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -22,10 +26,76 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # Vite bundles without checking identifiers: a typo in a variable, or a
+      # half-renamed import, gets through the build, gets through every grep
+      # below, and breaks only in the browser of whoever loads the page.
       - name: Lint
         run: npm run lint
 
-      # Nothing gets published here: the build is what says that whoever
-      # clones this repo gets something that compiles.
+      # Page lists, self-referencing origins and the import graph: three things
+      # that are written by hand in more than one place and that nothing else
+      # keeps in step. All three fail silently — the site builds and loads.
+      - name: Sources must agree with themselves
+        run: npm run check
+
+      # Nothing gets published here: the build is what says that whoever clones
+      # this repo gets something that compiles.
       - name: Build
         run: npm run build
+
+      # Compiling is not the same as being deployable. These are the same checks
+      # scripts/verify-gates.sh injects defects against, so each one is known to
+      # fail when it should rather than merely assumed to.
+      - name: Build output must be deployable
+        run: |
+          # Every page in the repo has to come out the other side.
+          for f in index.html 404.html pages/*.html; do
+            [ -f "dist/$f" ] || { echo "::error::$f was not built"; exit 1; }
+          done
+
+          # And each of them has to carry the bundle. A page that lost its
+          # stylesheet link still builds, still loads, and arrives unstyled.
+          for f in dist/index.html dist/404.html dist/pages/*.html; do
+            grep -qE 'href="/assets/main-[A-Za-z0-9_-]+\.css"' "$f" \
+              || { echo "::error::$f does not link the stylesheet"; exit 1; }
+            grep -qE 'src="/assets/main-[A-Za-z0-9_-]+\.js"' "$f" \
+              || { echo "::error::$f does not link the script bundle"; exit 1; }
+          done
+
+          # Nothing may point back at src/: those paths exist on your machine
+          # and nowhere on the host. Vite rewrites the references it parses —
+          # what it cannot see is a path assembled inside JavaScript.
+          if grep -rl '/src/' dist; then
+            echo "::error::the build still points at the sources"; exit 1
+          fi
+
+          # 404.html answers for any unknown URL at any depth, so a relative
+          # link in it resolves somewhere different every time.
+          # `|| true` because GitHub runs this with `bash -e`, and grep -v exits
+          # 1 when it finds nothing — which is the case where the 404 is fine.
+          RELATIVE="$(grep -oE 'href="[^"]*"' dist/404.html | grep -vE 'href="(/|https?://|mailto:|#)' || true)"
+          if [ -n "$RELATIVE" ]; then
+            echo "::error::relative links in the 404: $RELATIVE"; exit 1
+          fi
+
+  # Verifies the gates themselves. A gate that has never failed is not a
+  # verified gate: it is only assumed to work, and green can mean "no defects"
+  # or "the check is not looking where it thinks it is". Here the defect each
+  # gate claims to catch is injected, one at a time, and red is required.
+  verify-gates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4.4.0
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Gates must fail when they are supposed to
+        run: npm run verify:gates

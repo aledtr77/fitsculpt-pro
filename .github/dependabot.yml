@@ -1,0 +1,22 @@
+# The repo ships package-lock.json, so anyone who clones it installs the exact
+# versions CI verified. That is the point — and it is also why the lockfile goes
+# stale on its own: nothing here ever resolves a newer Vite unless something
+# goes and asks for one.
+#
+# This is that something. Dependabot opens the bump, CI runs lint, the source
+# checks and the build against it, and merging means the next person to clone
+# gets a version that was already tried here rather than whatever the registry
+# happened to serve them.
+#
+# Monthly is deliberate: this is a static template, not an application with a
+# threat surface, and a weekly PR nobody reads is worse than a monthly one that
+# gets looked at.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: monthly
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"

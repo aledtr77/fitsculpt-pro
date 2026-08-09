@@ -10,7 +10,12 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "check": "npm run check:pages && npm run check:origin && npm run check:modules",
+    "check:pages": "node scripts/check-pages.mjs",
+    "check:origin": "node scripts/check-origin.mjs",
+    "check:modules": "node scripts/check-modules.mjs",
+    "verify:gates": "bash scripts/verify-gates.sh"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

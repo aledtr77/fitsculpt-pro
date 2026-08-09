@@ -1,5 +1,6 @@
-// Two kinds of JavaScript here: the scripts the page loads, which get the
-// browser globals, and vite.config.js, which runs in Node at build time.
+// Three kinds of JavaScript here: the scripts the page loads, which get the
+// browser globals, and two that run in Node — vite.config.js at build time and
+// the checks under scripts/ that guard the repo against itself.
 
 import js from '@eslint/js';
 import globals from 'globals';
@@ -16,7 +17,7 @@ export default [
     rules: js.configs.recommended.rules,
   },
   {
-    files: ['vite.config.js'],
+    files: ['vite.config.js', 'scripts/**/*.mjs'],
     languageOptions: {
       ecmaVersion: 'latest',
       sourceType: 'module',

@@ -1,6 +1,6 @@
 # FitSculpt Pro
 
-[![lint · build](https://img.shields.io/github/actions/workflow/status/aledtr77/fitsculpt-pro/ci.yml?branch=main&label=lint%20%C2%B7%20build)](https://github.com/aledtr77/fitsculpt-pro/actions/workflows/ci.yml)
+[![lint · checks · build](https://img.shields.io/github/actions/workflow/status/aledtr77/fitsculpt-pro/ci.yml?branch=main&label=lint%20%C2%B7%20checks%20%C2%B7%20build)](https://github.com/aledtr77/fitsculpt-pro/actions/workflows/ci.yml)
 [![licence: source-available](https://img.shields.io/badge/licence-source--available-0969da)](LICENSE)
 
 A single-page landing template for physique and body-sculpting coaches. Light and
@@ -58,6 +58,7 @@ index.html              the landing page — every section lives here
 pages/                  privacy, disclaimer
 src/styles/             theme, base, layout, components, sections, main
 src/scripts/            theme, calculator, modal, animations, main
+scripts/                the checks CI runs (see below)
 vite.config.js
 ```
 
@@ -86,6 +87,38 @@ that `dist/` folder, unedited.
 One exception: a GitHub Pages **project** site serves from a subpath
 (`user.github.io/repo/`), and the emitted asset URLs are absolute. Set `base: '/repo/'`
 in `vite.config.js` for that case, or every stylesheet, script and image 404s.
+
+## The checks
+
+Three things in a static site are written by hand in more than one place, and
+nothing keeps them in step. All three fail without a symptom: the build passes,
+the page loads, and you find out from a crawler or from a visitor.
+
+```bash
+npm run check          # all three at once — what CI runs
+npm run check:pages    # vite inputs ↔ sitemap ↔ the .html files on disk
+npm run check:origin   # canonical, og:url, JSON-LD, robots and sitemap agree
+npm run check:modules  # every stylesheet and script reachable from its entry point
+```
+
+`check:origin` reads the origin out of `public/sitemap.xml` rather than having it
+hardcoded, so it keeps working once you point the site at your own domain — it
+checks that the URLs agree with each other, not that they match some fixed value.
+
+CI runs those, then builds and checks that the output is deployable: every page
+built, every page carrying the bundle, nothing still pointing at `src/`, and no
+relative link left in `404.html` — which answers for any unknown URL at any
+depth, so a relative link there resolves somewhere different every time.
+
+```bash
+npm run verify:gates
+```
+
+That last one checks the checks. A gate that has never failed is not a verified
+gate, it is one assumed to work — green could equally mean "no defects" or "this
+is not looking where it thinks it is". So each defect a gate claims to catch gets
+injected into a throwaway copy of the repo, one at a time, and red is the required
+outcome. It runs as its own CI job.
 
 ## Before you publish it
 
