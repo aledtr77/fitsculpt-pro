@@ -145,7 +145,7 @@ else
   git add package.json package-lock.json
   git commit -q -m "release v$NEXT"
   git tag "v$NEXT"
-  git push --quiet
+  git push --quiet origin main
   git push --quiet origin "v$NEXT"
   echo "   commit, tag v$NEXT and push: done"
 fi
