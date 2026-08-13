@@ -19,22 +19,12 @@ the same structure serves any coaching practice that sells programmes.
 Built with semantic HTML, modular CSS and JavaScript, then assembled with Vite into a
 static site that can be deployed without a server.
 
-Published with its source so the result and implementation can be inspected together.
-Read it, take it apart and build on it within the licence terms.
+Published as a code reference — this is what my markup and CSS actually look like.
+Read it, take it apart, build on it.
 
 **Free to use, modify and deploy — personal projects and client work included.**
 You may not redistribute or sell it as a template, theme or starter kit, modified
 or not. Full terms in [LICENSE](LICENSE).
-
-## Project role and AI use
-
-This is an AI-assisted personal project. I chose the niche, visual direction, page
-structure, conversion flow and release requirements. AI supported much of the code,
-copy and documentation; I directed the iterations, reviewed the output, tested the
-published interface and remain responsible for the version in this repository.
-
-It is a working template and a record of my learning process, not a claim that I wrote
-every line by hand or that the fictional business content is ready for real-world use.
 
 ## What's in it
 
