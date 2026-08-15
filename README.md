@@ -28,13 +28,12 @@ or not. Full terms in [LICENSE](LICENSE).
 
 ## Project role and AI use
 
-The code and the copy in this template are written by AI models — most of it, not part
-of it. What is mine is the niche, the visual direction, the page structure, the
-conversion flow and the release requirements; the direction of every iteration; the
-review of the result; the checks that gate it; and the published site, which I remain
-responsible for.
+This is an AI-assisted personal project. I chose the niche, visual direction, page
+structure, conversion flow and release requirements. AI supported much of the code,
+copy and documentation; I directed the iterations, reviewed the output, tested the
+published interface and remain responsible for the version in this repository.
 
-It is a working template and part of my learning process, not a claim that I wrote
+It is a working template and a record of my learning process, not a claim that I wrote
 every line by hand or that the fictional business content is ready for real-world use.
 
 ## What's in it
