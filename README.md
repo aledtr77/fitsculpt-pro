@@ -26,16 +26,6 @@ Read it, take it apart and build on it within the licence terms.
 You may not redistribute or sell it as a template, theme or starter kit, modified
 or not. Full terms in [LICENSE](LICENSE).
 
-## Project role and AI use
-
-This is an AI-assisted personal project. I chose the niche, visual direction, page
-structure, conversion flow and release requirements. AI supported much of the code,
-copy and documentation; I directed the iterations, reviewed the output, tested the
-published interface and remain responsible for the version in this repository.
-
-It is a working template and a record of my learning process, not a claim that I wrote
-every line by hand or that the fictional business content is ready for real-world use.
-
 ## What's in it
 
 - **One landing page** — coach, calculator, programs, results, memberships, FAQ
@@ -192,11 +182,10 @@ because the "4.9/5" and the testimonials on the page are invented. Marking inven
 ratings up breaks Google's structured-data policy on top of the consumer-law problem.
 Add them once you have genuine reviews, not before.
 
-## The paid templates
+## The other templates
 
-This one is free. The other templates, each with its own visual direction and full
-sources, are on **[Etsy](https://www.etsy.com/shop/CodedgeStudio)** — and the live
-demos are browsable first at **[codedge.it/templates](https://codedge.it/templates/)**.
+This one is free. The others, each with its own visual direction and full sources,
+have live demos at **[codedge.it/templates](https://codedge.it/templates/)**.
 
 ## Licence
 
@@ -205,3 +194,13 @@ not redistribute or sell it as a template, theme or starter kit, modified or not
 Full terms in [LICENSE](LICENSE).
 
 Different terms, or a custom build? **contatti.codedge@gmail.com**
+
+## How this was built
+
+I chose the niche, visual direction, page structure, conversion flow and release
+requirements. AI supported much of the code, copy and documentation; I directed the
+iterations, reviewed the output, tested the published interface and remain responsible
+for the version in this repository.
+
+It is a working template and a record of my learning process, not a claim that I wrote
+every line by hand or that the fictional business content is ready for real-world use.
