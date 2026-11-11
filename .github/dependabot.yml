@@ -24,3 +24,6 @@ updates:
       # Newer jsdom majors require Node 22; the template supports Node 20.
       - dependency-name: "jsdom"
         update-types: ["version-update:semver-major"]
+      # Vitest 5 also drops Node 20 support.
+      - dependency-name: "vitest"
+        update-types: ["version-update:semver-major"]
